@@ -1,22 +1,22 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-indigo-900 to-purple-900 flex items-center justify-center p-4">
-    <div class="w-full max-w-4xl bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden">
-      <div class="p-8 bg-white/5 border-b border-white/10">
+  <div class="min-h-[calc(100vh-4rem)] bg-gray-900 text-white w-full">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+      <div class="p-4 sm:p-8 bg-white/5 border-b border-white/10">
         <h2 class="text-3xl font-extrabold text-white tracking-tight flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
           </svg>
-          Lyrics Viewer
+          Lyrics
         </h2>
         <h4 class="text-xl font-semibold text-white/80 mt-2 truncate">
           {{ currentSong?.title || 'No Song Selected' }}
         </h4>
       </div>
       
-      <div class="p-8">
+      <div class="p-4 sm:p-8">
         <div 
           v-if="currentLyrics" 
-          class="bg-white/5 rounded-xl p-6 max-h-[500px] overflow-y-auto custom-scrollbar text-white/90"
+          class="bg-white/5 rounded-xl p-4 sm:p-6 h-[calc(100vh-20rem)] overflow-y-auto custom-scrollbar text-white/90"
         >
           <div class="whitespace-pre-line leading-relaxed text-lg font-light tracking-wide">
             {{ currentLyrics }}

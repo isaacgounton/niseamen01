@@ -3,6 +3,7 @@ import Home from './views/Home.vue'
 import Lyrics from './views/Lyrics.vue'
 import About from './views/About.vue'
 import Admin from './views/Admin.vue'
+import Profile from './views/Profile.vue'  // Make sure to import Profile
 
 const routes = [
   {
@@ -11,9 +12,10 @@ const routes = [
     component: Home
   },
   {
-    path: '/lyrics',
+    path: '/lyrics/:songId?',
     name: 'Lyrics',
-    component: Lyrics
+    component: Lyrics,
+    props: true
   },
   {
     path: '/about',
@@ -24,6 +26,11 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: Admin
+  },
+  { 
+    path: '/profile', 
+    name: 'Profile', 
+    component: Profile 
   },
   // Add a catch-all route to redirect to Home
   {

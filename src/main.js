@@ -1,6 +1,6 @@
 // src/main.js
 
-if ('serviceWorker' in navigator) {
+/*if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
       .then(registration => {
@@ -29,7 +29,7 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     window.location.reload();
   });
-}
+}*/
 
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -42,8 +42,8 @@ app.use(router) // Ensure you use the router
 
 app.mount('#app')
 
-navigator.serviceWorker.register('/service-worker.js').then(registration => {
+/*navigator.serviceWorker.register('/service-worker.js').then(registration => {
   console.log('Service Worker registered with scope:', registration.scope)
 }).catch(error => {
   console.error('Service Worker registration failed:', error)
-})
+})*/

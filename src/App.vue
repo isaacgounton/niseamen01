@@ -1,23 +1,55 @@
 <template>
   <div class="min-h-screen bg-gray-900 flex flex-col">
-    <!-- Main Content -->
-    <main class="flex-grow w-full container mx-auto px-4 flex flex-col bg-transparent">
-      <router-view 
-        :songs="songs"
-        :currentSong="currentSong"
-        :isPlaying="isPlaying"
-        :currentTime="currentTime"
-        :duration="duration"
-        :progress="progress"
-        :currentLyrics="currentLyrics"
-        @playSong="playSong"
-        @previousTrack="previousTrack"
-        @nextTrack="nextTrack"
-        @togglePlay="togglePlay"
-        @seek="seek"
-        class="flex-grow"
-      ></router-view>
+    <!-- Main Content Area -->
+    <main class="flex-grow w-full">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <router-view 
+          :songs="songs"
+          :currentSong="currentSong"
+          :isPlaying="isPlaying"
+          :currentTime="currentTime"
+          :duration="duration"
+          :progress="progress"
+          :currentLyrics="currentLyrics"
+          @playSong="playSong"
+          @previousTrack="previousTrack"
+          @nextTrack="nextTrack"
+          @togglePlay="togglePlay"
+          @seek="seek"
+          class="flex-grow pb-24"
+        ></router-view>
+      </div>
     </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bg-gray-800 border-t border-gray-700 fixed bottom-0 left-0 right-0 z-50">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-around py-3"> <!-- Add this wrapper div with flex -->
+          <router-link 
+            v-for="item in menuItems" 
+            :key="item.path"
+            :to="item.path"
+            class="flex flex-col items-center text-white/60 hover:text-white transition-colors"
+            :class="{ 'text-cyan-400': $route.path === item.path }"
+          >
+            <i :class="item.icon" class="text-2xl mb-1"></i>
+            <span class="text-xs">{{ item.text }}</span>
+          </router-link>
+          
+          <!-- Login/Profile Icon -->
+          <router-link 
+            to="/profile"
+            class="flex flex-col items-center text-white/60 hover:text-white transition-colors"
+            :class="{ 'text-cyan-400': $route.path === '/profile' }"
+          >
+            <i class="fas fa-user-circle text-2xl mb-1"></i>
+            <span class="text-xs">
+              {{ user ? 'Profile' : 'Login' }}
+            </span>
+          </router-link>
+        </div>
+      </div>
+    </nav>
   </div>
 </template>
   
@@ -33,9 +65,14 @@ import {
 } from 'firebase/auth'
 import { getDownloadURL, ref as storageRef } from 'firebase/storage'
 import { songService } from './services/firebase'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faMusic, faBook, faInfo, faUser } from '@fortawesome/free-solid-svg-icons'
 
 export default {
   name: 'App',
+  components: {
+    FontAwesomeIcon
+  },
   setup() {
     const router = useRouter()
 
@@ -50,11 +87,23 @@ export default {
     const duration = ref(0)
     const progressBar = ref(null)
 
-    // Menu items
+    // Modify menuItems to remove Admin
     const menuItems = [
-      { text: 'Songs', path: '/' },
-      { text: 'Lyrics', path: '/lyrics' },
-      { text: 'About', path: '/about' }
+      { 
+        text: 'Songs', 
+        path: '/', 
+        icon: 'fas fa-music'
+      },
+      { 
+        text: 'Lyrics', 
+        path: '/lyrics', 
+        icon: 'fas fa-book'
+      },
+      { 
+        text: 'About', 
+        path: '/about', 
+        icon: 'fas fa-info'
+      }
     ]
       
     // Computed
@@ -319,8 +368,22 @@ export default {
         nextTrack,
         seek,
         audio,
-        loadLyrics
+        loadLyrics,
+        menuItems
       }
     }
   }
 </script>
+
+<style lang="postcss">
+/* Add these global styles */
+body {
+  @apply overflow-x-hidden;
+}
+
+@media (max-width: 640px) {
+  main {
+    padding-bottom: 5rem; /* Ensure content doesn't get hidden behind nav */
+  }
+}
+</style>
