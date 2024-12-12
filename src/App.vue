@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen flex flex-col">  <!-- Changed 'min-h-screen' to 'h-screen' -->
+  <div class="h-screen flex flex-col">
     <!-- Main Content Area -->
-    <main class="flex-1 w-full overflow-auto">  <!-- Changed 'flex-grow' to 'flex-1' and added 'overflow-auto' -->
+    <main class="flex-1 w-full overflow-auto">
       <div class="h-full w-full">
         <router-view 
           :songs="songs"
@@ -22,14 +22,14 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="bg-gradient-to-r from-blue-900/90 via-indigo-900/90 to-violet-900/90 backdrop-blur-lg border-t border-white/10 h-16 fixed bottom-0 left-0 right-0 z-50 shadow-lg shadow-black/50">
+    <nav class="bg-gradient-to-r from-blue-900/90 via-indigo-900/90 to-violet-900/90 backdrop-blur-lg border-t border-white/10 h-20 fixed bottom-0 left-0 right-0 z-50 shadow-lg shadow-black/50">
       <div class="h-full w-full">
-        <div class="flex justify-around items-center h-full">
+        <div class="flex justify-around items-center h-full pb-safe">
           <router-link 
             v-for="item in menuItems" 
             :key="item.path"
             :to="item.path"
-            class="flex flex-col items-center text-white/60 hover:text-white transition-colors"
+            class="flex flex-col items-center text-white/60 hover:text-white transition-colors pb-2"
             :class="{ 'text-cyan-400': $route.path === item.path }"
           >
             <i :class="item.icon" class="text-2xl mb-1"></i>
@@ -39,7 +39,7 @@
           <!-- Login/Profile Icon -->
           <router-link 
             to="/profile"
-            class="flex flex-col items-center text-white/60 hover:text-white transition-colors"
+            class="flex flex-col items-center text-white/60 hover:text-white transition-colors pb-2"
             :class="{ 'text-cyan-400': $route.path === '/profile' }"
           >
             <i class="fas fa-user-circle text-2xl mb-1"></i>
@@ -429,7 +429,7 @@ body {
 
 @media (max-width: 640px) {
   main {
-    padding-bottom: 4rem; /* Adjusted padding to account for the fixed nav */
+    padding-bottom: 5rem; /* Increased from 4rem to 5rem to account for taller nav */
   }
 }
 
@@ -442,5 +442,10 @@ body {
 
 .animate-fade-in-out {
   animation: fadeInOut 3s ease-in-out;
+}
+
+/* Add this to your existing styles */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
 }
 </style>
