@@ -103,12 +103,20 @@
 
       <!-- Search input -->
       <div class="px-4 flex-shrink-0">
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search songs..."
-          class="w-full p-2 bg-white/10 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-        />
+        <div class="relative">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search songs or lyrics..."
+            class="w-full p-2 bg-white/10 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+          />
+          <div v-if="isSearching" class="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <svg class="animate-spin h-5 w-5 text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+        </div>
       </div>
 
       <!-- Playlist with dynamic height -->
@@ -125,7 +133,12 @@
               ]"
               @click="playSong(song)"
             >
-              {{ song.title }}
+              <div class="flex flex-col">
+                <span class="font-medium" v-html="song.title"></span>
+                <template v-if="searchQuery && song.matchedLyrics">
+                  <span class="text-sm text-white/60 mt-1 italic" v-html="song.matchedLyrics"></span>
+                </template>
+              </div>
             </div>
           </div>
         </div>
@@ -135,7 +148,9 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { algoliaService } from '../services/algolia'
+import debounce from 'lodash/debounce'
 
 export default {
   name: 'Home',
@@ -144,6 +159,8 @@ export default {
   setup(props, { emit }) {
     const user = ref(null)
     const searchQuery = ref('')
+    const searchResults = ref([])
+    const isSearching = ref(false)
 
     const signIn = () => {
       // Implement sign-in logic
@@ -153,14 +170,37 @@ export default {
       // Implement sign-out logic
     }
 
+    // Debounced search function
+    const performSearch = debounce(async (query) => {
+      if (!query) {
+        searchResults.value = []
+        return
+      }
+      
+      isSearching.value = true
+      try {
+        const results = await algoliaService.search(query)
+        searchResults.value = results.map(hit => ({
+          ...hit,
+          id: hit.objectID,
+          title: hit._highlightResult?.title?.value || hit.title,
+          matchedLyrics: hit._highlightResult?.lyrics?.value
+        }))
+      } catch (error) {
+        console.error('Search error:', error)
+      } finally {
+        isSearching.value = false
+      }
+    }, 300)
+
+    // Watch for search query changes
+    watch(searchQuery, (newQuery) => {
+      performSearch(newQuery)
+    })
+
     const filteredSongs = computed(() => {
       if (!searchQuery.value) return props.songs
-
-      const query = searchQuery.value.toLowerCase()
-      return props.songs.filter(song => 
-        song.title.toLowerCase().includes(query) ||
-        (song.artist && song.artist.toLowerCase().includes(query))
-      )
+      return searchResults.value
     })
 
     const formatTime = (time) => {
@@ -181,6 +221,7 @@ export default {
       signOut,
       searchQuery,
       filteredSongs,
+      isSearching,
       formatTime,
       previousTrack,
       nextTrack,
@@ -191,3 +232,10 @@ export default {
   }
 }
 </script>
+
+<style>
+/* Add styles for Algolia highlights */
+mark {
+  @apply bg-purple-400/30 text-white font-medium rounded px-0.5;
+}
+</style>
