@@ -1,14 +1,38 @@
 <template>
-  <div class="max-w-3xl mx-auto bg-white/10 backdrop-blur-lg rounded-xl p-6 shadow-xl">
-    <h2 class="text-2xl font-bold text-white mb-4">Lyrics</h2>
-    <h4 class="text-2x1 font-bold text-white mb-4">{{ currentSong?.title || 'Select a song' }}</h4>
-    <div v-if="currentLyrics" class="bg-white/5 rounded-lg p-4 max-h-96 overflow-y-auto"> <!-- Fixed height -->
-      <div class="text-white/90 whitespace-pre-line">
-        {{ currentLyrics }}
+  <div class="min-h-screen bg-gradient-to-br from-indigo-900 to-purple-900 flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl bg-white/10 backdrop-blur-2xl rounded-3xl shadow-2xl overflow-hidden">
+      <div class="p-8 bg-white/5 border-b border-white/10">
+        <h2 class="text-3xl font-extrabold text-white tracking-tight flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+          </svg>
+          Lyrics Viewer
+        </h2>
+        <h4 class="text-xl font-semibold text-white/80 mt-2 truncate">
+          {{ currentSong?.title || 'No Song Selected' }}
+        </h4>
       </div>
-    </div>
-    <div v-else class="text-white/70 text-center py-8">
-      Select a song to view lyrics
+      
+      <div class="p-8">
+        <div 
+          v-if="currentLyrics" 
+          class="bg-white/5 rounded-xl p-6 max-h-[500px] overflow-y-auto custom-scrollbar text-white/90"
+        >
+          <div class="whitespace-pre-line leading-relaxed text-lg font-light tracking-wide">
+            {{ currentLyrics }}
+          </div>
+        </div>
+        
+        <div 
+          v-else 
+          class="text-white/70 text-center py-12 bg-white/5 rounded-xl flex flex-col items-center justify-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+          </svg>
+          <p class="text-2xl font-light">Select a song to view lyrics</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -19,3 +43,20 @@ export default {
   props: ['currentLyrics', 'currentSong']
 }
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+</style>
