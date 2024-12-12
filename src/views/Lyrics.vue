@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col bg-gray-900 text-white">
+  <div class="h-full flex flex-col bg-transparent text-white">
     <div class="flex flex-col h-full">
       <div class="p-4 bg-white/5 border-b border-white/10 flex-shrink-0">
         <h2 class="text-3xl font-extrabold text-white tracking-tight flex items-center">

@@ -4,11 +4,11 @@
 
 /* Base styles */
 html, body {
-  @apply bg-gray-900 text-gray-100 m-0 p-0 min-h-screen overflow-x-hidden;
+  @apply bg-gradient-to-br from-blue-900 via-indigo-900 to-violet-900 text-gray-100 m-0 p-0 min-h-screen overflow-x-hidden;
 }
 
 #app {
-  @apply min-h-screen bg-gray-900;
+  @apply min-h-screen bg-gradient-to-br from-blue-900/50 via-indigo-900/50 to-violet-900/50 backdrop-blur-sm;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 

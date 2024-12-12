@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full bg-gray-900 text-white flex flex-col overflow-y-auto">
+  <div class="h-full bg-transparent text-white flex flex-col overflow-y-auto">
     <div class="flex-grow">
       <div class="p-4 bg-white/5 border-b border-white/10 flex-shrink-0">
         <h2 class="text-3xl font-extrabold text-white tracking-tight flex items-center">

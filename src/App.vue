@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-900 flex flex-col">
+  <div class="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-violet-900 flex flex-col">
     <!-- Main Content Area -->
     <main class="flex-grow w-full overflow-hidden">
       <div class="h-full w-full">
@@ -22,7 +22,7 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="bg-gray-800 border-t border-gray-700 h-16 fixed bottom-0 left-0 right-0 z-50">
+    <nav class="bg-gradient-to-r from-blue-900/90 via-indigo-900/90 to-violet-900/90 backdrop-blur-lg border-t border-white/10 h-16 fixed bottom-0 left-0 right-0 z-50 shadow-lg shadow-black/50">
       <div class="h-full w-full">
         <div class="flex justify-around items-center h-full">
           <router-link 
@@ -52,10 +52,10 @@
     </nav>
   </div>
 
-  <!-- Add this toast notification component -->
+  <!-- Toast notification with updated colors -->
   <div 
     v-if="errorMessage" 
-    class="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out"
+    class="fixed top-4 right-4 bg-indigo-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out"
   >
     {{ errorMessage }}
   </div>
