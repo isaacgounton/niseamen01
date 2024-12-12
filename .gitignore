@@ -38,3 +38,5 @@ captures/
 local.properties
 .externalNativeBuild
 .cxx
+
+.env
