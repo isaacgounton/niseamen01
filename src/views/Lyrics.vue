@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-[calc(100vh-4rem)] bg-gray-900 text-white w-full">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-      <div class="p-4 sm:p-8 bg-white/5 border-b border-white/10">
+  <div class="h-full flex flex-col bg-gray-900 text-white">
+    <div class="flex flex-col h-full">
+      <div class="p-4 bg-white/5 border-b border-white/10 flex-shrink-0">
         <h2 class="text-3xl font-extrabold text-white tracking-tight flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
@@ -13,10 +13,10 @@
         </h4>
       </div>
       
-      <div class="p-4 sm:p-8">
+      <div class="flex-grow overflow-hidden p-4">
         <div 
           v-if="currentLyrics" 
-          class="bg-white/5 rounded-xl p-4 sm:p-6 h-[calc(100vh-20rem)] overflow-y-auto custom-scrollbar text-white/90"
+          class="bg-white/5 rounded-xl p-4 h-full overflow-y-auto custom-scrollbar text-white/90"
         >
           <div class="whitespace-pre-line leading-relaxed text-lg font-light tracking-wide">
             {{ currentLyrics }}
@@ -25,7 +25,7 @@
         
         <div 
           v-else 
-          class="text-white/70 text-center py-12 bg-white/5 rounded-xl flex flex-col items-center justify-center"
+          class="h-full text-white/70 text-center bg-white/5 rounded-xl flex flex-col items-center justify-center"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />

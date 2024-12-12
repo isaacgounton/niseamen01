@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-[calc(100vh-4rem)] bg-gray-900 text-white w-full">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-      <div class="p-4 sm:p-8 bg-white/5 border-b border-white/10">
+  <div class="h-full bg-gray-900 text-white flex flex-col overflow-y-auto">
+    <div class="flex-grow">
+      <div class="p-4 bg-white/5 border-b border-white/10 flex-shrink-0">
         <h2 class="text-3xl font-extrabold text-white tracking-tight flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -10,7 +10,7 @@
         </h2>
       </div>
       
-      <div class="p-4 sm:p-8 space-y-6">
+      <div class="p-4">
         <div v-if="user" class="space-y-4 sm:space-y-6">
           <div class="flex flex-col items-center">
             <img 

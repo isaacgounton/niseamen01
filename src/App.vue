@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-900 flex flex-col">
     <!-- Main Content Area -->
-    <main class="flex-grow w-full">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <main class="flex-grow w-full overflow-hidden">
+      <div class="h-full w-full">
         <router-view 
           :songs="songs"
           :currentSong="currentSong"
@@ -16,15 +16,15 @@
           @nextTrack="nextTrack"
           @togglePlay="togglePlay"
           @seek="seek"
-          class="flex-grow pb-24"
+          class="h-[calc(100vh-4rem)]"
         ></router-view>
       </div>
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="bg-gray-800 border-t border-gray-700 fixed bottom-0 left-0 right-0 z-50">
-      <div class="max-w-6xl mx-auto px-4">
-        <div class="flex justify-around py-3"> <!-- Add this wrapper div with flex -->
+    <nav class="bg-gray-800 border-t border-gray-700 h-16 fixed bottom-0 left-0 right-0 z-50">
+      <div class="h-full w-full">
+        <div class="flex justify-around items-center h-full">
           <router-link 
             v-for="item in menuItems" 
             :key="item.path"
@@ -51,10 +51,18 @@
       </div>
     </nav>
   </div>
+
+  <!-- Add this toast notification component -->
+  <div 
+    v-if="errorMessage" 
+    class="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-out"
+  >
+    {{ errorMessage }}
+  </div>
 </template>
   
 <script>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { auth, storage } from './firebase'
 import { 
@@ -86,6 +94,8 @@ export default {
     const currentTime = ref(0)
     const duration = ref(0)
     const progressBar = ref(null)
+    const errorMessage = ref('') // Add error message state
+    let errorTimer = null // Add error message timer
 
     // Modify menuItems to remove Admin
     const menuItems = [
@@ -222,6 +232,14 @@ export default {
       }
     }
 
+    const showError = (message) => {
+      errorMessage.value = message
+      if (errorTimer) clearTimeout(errorTimer)
+      errorTimer = setTimeout(() => {
+        errorMessage.value = ''
+      }, 3000)
+    }
+
     const playSong = async (song, autoplay = true) => {
       initializeAudio() // Ensure audio is initialized
       currentSong.value = song
@@ -231,16 +249,36 @@ export default {
         const musicRef = storageRef(storage, song.url)
         const downloadURL = await getDownloadURL(musicRef)
         
+        // Add loading state and error handling for audio loading
+        audio.value.onerror = () => {
+          isPlaying.value = false
+          showError('Failed to load the song. Please check your connection and try again.')
+        }
+
         audio.value.src = downloadURL
         if (autoplay) {
-          await audio.value.play()
-          isPlaying.value = true
+          try {
+            await audio.value.play()
+            isPlaying.value = true
+          } catch (playError) {
+            isPlaying.value = false
+            if (playError.name === 'NotAllowedError') {
+              showError('Playback was blocked. Please interact with the page first.')
+            } else {
+              showError('Unable to play the song. Please try again.')
+            }
+          }
         }
       } catch (error) {
         console.error('Error playing audio:', error)
         isPlaying.value = false
-        // Handle the error (e.g., show a message to the user)
-        alert('Failed to play the song. Please try again later.')
+        if (error.code === 'storage/object-not-found') {
+          showError('This song is currently unavailable.')
+        } else if (error.code === 'storage/unauthorized') {
+          showError('You don\'t have permission to play this song.')
+        } else {
+          showError('Failed to load the song. Please try again later.')
+        }
       }
       await loadLyrics(song.id)
     }
@@ -348,6 +386,11 @@ export default {
         saveCurrentState()
       }
     })
+
+    // Add cleanup for error timer
+    onUnmounted(() => {
+      if (errorTimer) clearTimeout(errorTimer)
+    })
       
       return {
         user,
@@ -369,21 +412,35 @@ export default {
         seek,
         audio,
         loadLyrics,
-        menuItems
+        errorMessage,
       }
     }
   }
 </script>
 
 <style lang="postcss">
-/* Add these global styles */
 body {
-  @apply overflow-x-hidden;
+  @apply overflow-hidden m-0 p-0;
+}
+
+#app {
+  @apply h-screen w-screen overflow-hidden;
 }
 
 @media (max-width: 640px) {
   main {
     padding-bottom: 5rem; /* Ensure content doesn't get hidden behind nav */
   }
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-1rem); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-1rem); }
+}
+
+.animate-fade-in-out {
+  animation: fadeInOut 3s ease-in-out;
 }
 </style>
