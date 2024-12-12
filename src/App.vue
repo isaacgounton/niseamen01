@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-violet-900 flex flex-col">
+  <div class="h-screen flex flex-col">  <!-- Changed 'min-h-screen' to 'h-screen' -->
     <!-- Main Content Area -->
-    <main class="flex-grow w-full overflow-hidden">
+    <main class="flex-1 w-full overflow-auto">  <!-- Changed 'flex-grow' to 'flex-1' and added 'overflow-auto' -->
       <div class="h-full w-full">
         <router-view 
           :songs="songs"
@@ -429,7 +429,7 @@ body {
 
 @media (max-width: 640px) {
   main {
-    padding-bottom: 5rem; /* Ensure content doesn't get hidden behind nav */
+    padding-bottom: 4rem; /* Adjusted padding to account for the fixed nav */
   }
 }
 

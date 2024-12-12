@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full flex flex-col bg-transparent text-white">
-    <div class="flex flex-col h-full">
+  <div class="h-full flex flex-col overflow-hidden">  <!-- Added 'overflow-hidden' -->
+    <div class="flex-1 flex flex-col">
       <div class="p-4 bg-white/5 border-b border-white/10 flex-shrink-0">
         <h2 class="text-3xl font-extrabold text-white tracking-tight flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -13,11 +13,10 @@
         </h4>
       </div>
       
-      <div class="flex-grow overflow-hidden p-4">
+      <div class="flex-1 overflow-y-auto p-4 pb-24">  <!-- Changed pb-20 to pb-24 -->
         <div 
           v-if="currentLyrics" 
-          class="bg-white/5 rounded-xl p-4 h-full overflow-y-auto custom-scrollbar text-white/90"
-        >
+          class="bg-white/5 rounded-xl p-4 overflow-y-auto custom-scrollbar text-white/90">  <!-- Removed 'h-full' -->
           <div class="whitespace-pre-line leading-relaxed text-lg font-light tracking-wide">
             {{ currentLyrics }}
           </div>

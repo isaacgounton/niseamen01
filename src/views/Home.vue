@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full flex flex-col">
-    <div class="bg-white/10 backdrop-blur-2xl shadow-2xl overflow-hidden h-full flex flex-col">
+  <div class="h-full flex flex-col overflow-hidden">  <!-- Added 'overflow-hidden' -->
+    <div class="flex-1 flex flex-col">  <!-- Changed to 'flex-1 flex flex-col' -->
       <!-- Player Info Section -->
       <div class="p-4 bg-white/5 border-b border-white/10">
         <div class="flex items-center space-x-4 sm:space-x-6">
@@ -112,8 +112,8 @@
       </div>
 
       <!-- Playlist with dynamic height -->
-      <div class="flex-grow overflow-hidden p-4">
-        <div class="bg-white/5 rounded-lg h-full overflow-y-auto">
+      <div class="flex-1 overflow-y-auto p-4 pb-24">  <!-- Changed pb-20 to pb-24 -->
+        <div class="bg-white/5 rounded-lg">
           <div 
             v-for="song in filteredSongs"
             :key="song.id"
