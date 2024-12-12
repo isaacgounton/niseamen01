@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="w-full max-w-full bg-white/10 backdrop-blur-2xl rounded-none shadow-2xl overflow-hidden">
+  <div class="min-h-screen bg-gray-900 text-white">
+    <div class="pt-0 w-full max-w-full bg-white/10 backdrop-blur-2xl rounded-none shadow-2xl overflow-hidden">
       <div class="p-8 bg-white/5 border-b border-white/10">
         <div class="flex items-center space-x-6">
           <div class="w-24 h-24 relative">
@@ -45,7 +45,7 @@
               :style="{ width: `${progress}%` }"
             ></div>
           </div>
-          <div class="flex justify-between text-white/70 text-sm mt-2">
+          <div class="flex justify-between text-xs text-white/50 mt-1">
             <span>{{ formatTime(currentTime) }}</span>
             <span>{{ formatTime(duration) }}</span>
           </div>
@@ -128,14 +128,23 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 export default {
   name: 'Home',
   props: ['songs', 'currentSong', 'isPlaying', 'currentTime', 'duration', 'progress'],
   emits: ['previousTrack', 'nextTrack', 'togglePlay', 'playSong', 'seek'],
   setup(props, { emit }) {
+    const user = ref(null)
     const searchQuery = ref('')
+
+    const signIn = () => {
+      // Implement sign-in logic
+    }
+
+    const signOut = () => {
+      // Implement sign-out logic
+    }
 
     const filteredSongs = computed(() => {
       if (!searchQuery.value) return props.songs
@@ -160,6 +169,9 @@ export default {
     const seek = (event) => emit('seek', event)
 
     return {
+      user,
+      signIn,
+      signOut,
       searchQuery,
       filteredSongs,
       formatTime,

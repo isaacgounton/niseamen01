@@ -22,3 +22,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Capacitor
+ios/
+android/
+capacitor.config.json
+*.keystore
+*.jks
+
+# Mobile-specific
+*.iml
+.gradle/
+build/
+captures/
+local.properties
+.externalNativeBuild
+.cxx

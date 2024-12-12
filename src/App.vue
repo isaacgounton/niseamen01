@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-900 flex flex-col">
     <!-- Main Content -->
-    <main class="flex-grow container mx-auto p-4 flex flex-col bg-transparent">
+    <main class="flex-grow w-full container mx-auto px-4 flex flex-col bg-transparent">
       <router-view 
         :songs="songs"
         :currentSong="currentSong"
@@ -18,47 +18,6 @@
         class="flex-grow"
       ></router-view>
     </main>
-
-    <!-- Updated Navigation -->
-    <nav class="bg-gray-800/95 backdrop-blur-sm text-white py-4 sticky bottom-0 z-50 border-t border-gray-700/50 shadow-lg">
-      <div class="flex justify-center items-center">
-        <!-- Navigation Links -->
-        <div class="flex space-x-6">
-          <router-link 
-            v-for="item in menuItems" 
-            :key="item.text"
-            :to="item.path"
-            class="px-3 py-2 rounded-md text-sm font-medium transition-all hover:text-cyan-400 hover:bg-gray-700/50"
-            :class="[$route.path === item.path ? 'bg-gray-700 text-cyan-400' : 'text-gray-200']"
-          >
-            {{ item.text }}
-          </router-link>
-        </div>
-        
-        <!-- Auth Section -->
-        <div v-if="!user" class="ml-4 flex-shrink-0">
-          <button 
-            @click="signIn" 
-            class="flex items-center space-x-2 bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg transition-colors"
-          >
-            <i class="fas fa-sign-in-alt"></i> <span>Sign In</span>
-          </button>
-        </div>
-        <div v-else class="flex items-center space-x-4 ml-4 flex-shrink-0">
-          <img 
-            :src="user.photoURL" 
-            :alt="user.displayName" 
-            class="w-8 h-8 rounded-full ring-2 ring-cyan-400 ring-offset-2 ring-offset-gray-800"
-          >
-          <button 
-            @click="signOut"
-            class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
-          >
-          <i class="fas fa-sign-out-alt"></i> Logout
-          </button>
-        </div>
-      </div>
-    </nav>
   </div>
 </template>
   
@@ -364,4 +323,4 @@ export default {
       }
     }
   }
-  </script>
+</script>
