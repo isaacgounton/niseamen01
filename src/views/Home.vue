@@ -236,6 +236,11 @@ export default {
 <style>
 /* Add styles for Algolia highlights */
 mark {
-  @apply bg-purple-400/30 text-white font-medium rounded px-0.5;
+  background-color: rgba(168, 85, 247, 0.3);
+  color: white;
+  font-weight: 500;
+  border-radius: 0.125rem;
+  padding-left: 0.125rem;
+  padding-right: 0.125rem;
 }
 </style>

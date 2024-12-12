@@ -1,6 +1,6 @@
-import algoliasearch from 'algoliasearch/lite'
+import * as algoliasearch from 'algoliasearch'
 
-const client = algoliasearch(
+const client = algoliasearch.default(
   import.meta.env.VITE_ALGOLIA_APP_ID,
   import.meta.env.VITE_ALGOLIA_SEARCH_API_KEY
 )
