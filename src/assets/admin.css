@@ -1,0 +1,367 @@
+:root {
+    --primary-color: #4A90E2;
+    --secondary-color: #F5A623;
+    --background-color: #F8F9FA;
+    --text-color: #333333;
+    --card-background: #FFFFFF;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    padding: 20px;
+    flex-direction: row-reverse; /* Change to row-reverse to place form on the right */
+  }
+
+  .container {
+    background: var(--card-background);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px; /* Adjust width to fit alongside the form */
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-right: 20px; /* Add margin to the right to separate from the form */
+  }
+
+  h1 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+
+  #imageInput {
+    display: none;
+  }
+
+  .btn {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 16px;
+    margin: 10px 5px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .btn:hover {
+    background-color: #3A7BC8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+  }
+
+  #result {
+    margin-top: 1.5rem;
+    text-align: left;
+    display: none;
+  }
+
+  #editor {
+    height: 300px;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+    display: none;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  #editButtons {
+    display: none;
+    margin-top: 1.5rem;
+  }
+
+  #copyButton {
+    background-color: var(--secondary-color);
+  }
+
+  #copyButton:hover {
+    background-color: #E09511;
+  }
+
+  #dropZone {
+    border: 3px dashed #ccc;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  #dropZone:hover, #dropZone.dragover {
+    background-color: rgba(74, 144, 226, 0.1);
+    border-color: var(--primary-color);
+  }
+
+  #dropZone p {
+    margin: 0;
+    font-size: 18px;
+    color: #666;
+  }
+
+  .icon {
+    font-size: 48px;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+  }
+
+  #apiKeyInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
+  #apiKeyInput:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+  }
+
+  #apiKeyToggle {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  #apiKeyToggle:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      flex-direction: column-reverse; /* Stack elements vertically with container on top */
+      padding: 10px;
+    }
+
+    .container {
+      margin: 0; /* Remove margin to fit the screen */
+      max-width: 100%; /* Allow full width */
+      padding: 1rem; /* Adjust padding */
+    }
+
+    #lyricsForm {
+      margin: 0 0 20px 0; /* Adjust margin for better spacing */
+      max-width: 100%; /* Allow full width */
+      padding: 1rem; /* Adjust padding */
+    }
+
+    #dropZone {
+      padding: 20px; /* Adjust padding */
+    }
+
+    #dropZone p {
+      font-size: 16px; /* Adjust font size */
+    }
+
+    .icon {
+      font-size: 36px; /* Adjust icon size */
+    }
+
+    h1 {
+      font-size: 24px; /* Adjust font size */
+    }
+
+    .btn {
+      padding: 10px 15px; /* Adjust padding */
+      font-size: 14px; /* Adjust font size */
+    }
+
+    #lyricsForm h2 {
+      font-size: 20px; /* Adjust font size */
+    }
+
+    #lyricsForm label {
+      font-size: 14px; /* Adjust font size */
+    }
+
+    #lyricsForm input[type="text"], #lyricsForm textarea {
+      font-size: 14px; /* Adjust font size */
+    }
+
+    #lyricsForm button {
+      padding: 10px; /* Adjust padding */
+      font-size: 14px; /* Adjust font size */
+    }
+  }
+
+  #lyricsForm {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    margin-right: 20px;
+    transition: all 0.3s ease;
+    margin-left: 20px; /* Add margin to the left to separate from the container */
+  }
+
+  #lyricsForm h2 {
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--text-color);
+  }
+
+  #lyricsForm label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--text-color);
+  }
+
+  #lyricsForm input[type="text"], #lyricsForm textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    transition: border 0.3s, box-shadow 0.3s;
+  }
+
+  #lyricsForm input[type="text"]:focus, #lyricsForm textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 6px rgba(74, 144, 226, 0.2);
+  }
+
+  #lyricsForm button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+
+  #lyricsForm button:hover {
+    background-color: #3A7BC8;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .success-message, .error-message {
+    font-size: 14px;
+    margin-top: 10px;
+    display: none;
+    text-align: center;
+  }
+
+  .success-message {
+    color: #28a745;
+  }
+
+  .error-message {
+    color: #dc3545;
+  }
+
+  .camera-btn {
+    display: none; /* Hidden by default, shown on mobile */
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .camera-icon {
+    font-size: 20px;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      flex-direction: column-reverse; /* Stack elements vertically with container on top */
+      padding: 10px;
+    }
+
+    .container {
+      margin: 0; /* Remove margin to fit the screen */
+      max-width: 100%; /* Allow full width */
+      padding: 1rem; /* Adjust padding */
+    }
+
+    #lyricsForm {
+      margin: 0 0 20px 0; /* Adjust margin for better spacing */
+      max-width: 100%; /* Allow full width */
+      padding: 1rem; /* Adjust padding */
+    }
+
+    #dropZone {
+      padding: 20px; /* Adjust padding */
+    }
+
+    #dropZone p {
+      font-size: 14px; /* Make text smaller on mobile */
+    }
+
+    .icon {
+      font-size: 36px; /* Adjust icon size */
+    }
+
+    h1 {
+      font-size: 24px; /* Adjust font size */
+    }
+
+    .btn {
+      padding: 10px 15px; /* Adjust padding */
+      font-size: 14px; /* Adjust font size */
+    }
+
+    #lyricsForm h2 {
+      font-size: 20px; /* Adjust font size */
+    }
+
+    #lyricsForm label {
+      font-size: 14px; /* Adjust font size */
+    }
+
+    #lyricsForm input[type="text"], #lyricsForm textarea {
+      font-size: 14px; /* Adjust font size */
+    }
+
+    #lyricsForm button {
+      padding: 10px; /* Adjust padding */
+      font-size: 14px; /* Adjust font size */
+    }
+
+    .camera-btn {
+      display: flex; /* Show on mobile */
+    }
+  }
