@@ -11,7 +11,7 @@
       </div>
       
       <div class="flex-1 overflow-y-auto p-4 pb-24">  <!-- Changed pb-20 to pb-24 -->
-        <div class="bg-white/5 rounded-xl p-6 space-y-6">
+        <div class="bg-white/5 rounded-xl p-6 space-y-6 max-h-[calc(120vh-24rem)] overflow-y-auto playlist-scrollbar"> <!-- Changed h-full to max-h-[calc(120vh-24rem)] -->
           <!-- App Info -->
           <div class="space-y-4">
             <div class="flex items-center justify-center mb-6">

@@ -16,7 +16,7 @@
       <div class="flex-1 overflow-y-auto p-4 pb-24">  <!-- Changed pb-20 to pb-24 -->
         <div 
           v-if="currentLyrics" 
-          class="bg-white/5 rounded-xl p-4 overflow-y-auto custom-scrollbar text-white/90">  <!-- Removed 'h-full' -->
+          class="bg-white/5 rounded-xl p-4 max-h-[calc(120vh-24rem)] overflow-y-auto playlist-scrollbar"> <!-- Reverted back to max-h -->
           <div class="whitespace-pre-line leading-relaxed text-lg font-light tracking-wide">
             {{ currentLyrics }}
           </div>
@@ -42,20 +42,3 @@ export default {
   props: ['currentLyrics', 'currentSong']
 }
 </script>
-
-<style scoped>
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-</style>

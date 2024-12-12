@@ -26,6 +26,26 @@ html, body {
   @apply bg-cyan-500/50 hover:bg-cyan-500 rounded-full transition-colors;
 }
 
+/* Playlist scrollbar styles */
+.playlist-scrollbar::-webkit-scrollbar {
+  width: 0.375rem; /* equivalent to w-1.5 */
+}
+
+.playlist-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 9999px;
+}
+
+.playlist-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.5); /* purple-400 with 50% opacity */
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+}
+
+.playlist-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(168, 85, 247); /* purple-400 */
+}
+
 /* Route transitions */
 .router-link-active {
   @apply text-cyan-400 bg-gray-700/50;
@@ -86,6 +106,22 @@ html, body {
 
 .fade-leave-active {
   animation: fadeIn 0.2s ease-in reverse;
+}
+
+/* Scrolling animation utilities */
+.hover-pause {
+  animation-play-state: paused;
+}
+
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/* Optimize scrolling performance */
+.optimize-scroll {
+  -webkit-overflow-scrolling: touch;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* Responsive typography */

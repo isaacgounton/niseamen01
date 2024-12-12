@@ -112,18 +112,21 @@
       </div>
 
       <!-- Playlist with dynamic height -->
-      <div class="flex-1 overflow-y-auto p-4 pb-24">  <!-- Changed pb-20 to pb-24 -->
-        <div class="bg-white/5 rounded-lg">
-          <div 
-            v-for="song in filteredSongs"
-            :key="song.id"
-            :class="[
-              'p-3 rounded-lg cursor-pointer transition-colors',
-              currentSong?.id === song.id ? 'bg-purple-400 text-white' : 'text-white hover:bg-white/10'
-            ]"
-            @click="playSong(song)"
-          >
-            {{ song.title }}
+      <div class="flex-1 overflow-y-auto p-4 pb-24">
+        <div class="bg-white/5 rounded-lg max-h-[calc(120vh-24rem)] overflow-y-auto playlist-scrollbar"> <!-- Added playlist-scrollbar class -->
+          <div class="p-2 space-y-1"> <!-- Added padding and spacing -->
+            <div 
+              v-for="song in filteredSongs"
+              :key="song.id"
+              :class="[
+                'p-3 rounded-lg cursor-pointer transition-all duration-200',
+                'hover:bg-white/20 hover:translate-x-1', // Changed scale to translate for smoother effect
+                currentSong?.id === song.id ? 'bg-purple-400 text-white' : 'text-white'
+              ]"
+              @click="playSong(song)"
+            >
+              {{ song.title }}
+            </div>
           </div>
         </div>
       </div>
