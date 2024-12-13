@@ -181,12 +181,17 @@ export default {
       isSearching.value = true
       try {
         const results = await algoliaService.search(query)
-        searchResults.value = results.map(hit => ({
-          ...hit,
-          id: hit.objectID,
-          title: hit._highlightResult?.title?.value || hit.title,
-          matchedLyrics: hit._highlightResult?.lyrics?.value
-        }))
+        // Map search results to include full song data
+        searchResults.value = results.map(hit => {
+          // Find the full song data from props.songs
+          const fullSong = props.songs.find(s => s.id === hit.objectID)
+          return {
+            ...fullSong, // Include all song data (url, etc.)
+            id: hit.objectID,
+            title: hit._highlightResult?.title?.value || hit.title,
+            matchedLyrics: hit._highlightResult?.lyrics?.value
+          }
+        }).filter(song => song.url) // Only include songs with valid URLs
       } catch (error) {
         console.error('Search error:', error)
       } finally {

@@ -241,7 +241,12 @@ export default {
     }
 
     const playSong = async (song, autoplay = true) => {
-      initializeAudio() // Ensure audio is initialized
+      if (!song?.url) {
+        showError('This song is not available')
+        return
+      }
+
+      initializeAudio()
       currentSong.value = song
       
       try {
@@ -249,31 +254,35 @@ export default {
         const musicRef = storageRef(storage, song.url)
         const downloadURL = await getDownloadURL(musicRef)
         
-        // Reset any previous errors
+        // Reset audio state
         audio.value.onerror = null
+        audio.value.src = ''
         
-        // Set up error handling for audio loading
+        // Set up error handling
         audio.value.onerror = (e) => {
           console.error('Audio error:', e)
           isPlaying.value = false
-          showError(`Unable to play "${song.title}". Please try again.`)
+          showError('Unable to play song. Please try again.')
         }
 
-        // Set up audio context for mobile
-        const setupAudioContext = async () => {
+        // Set up mobile audio context
+        try {
           const AudioContext = window.AudioContext || window.webkitAudioContext
-          if (AudioContext) {
-            const audioContext = new AudioContext()
-            await audioContext.resume()
+          if (AudioContext && !window.audioContext) {
+            window.audioContext = new AudioContext()
           }
+          if (window.audioContext?.state === 'suspended') {
+            await window.audioContext.resume()
+          }
+        } catch (audioContextError) {
+          console.error('AudioContext error:', audioContextError)
         }
 
-        // Set the source and attempt to play
+        // Load and play audio
         audio.value.src = downloadURL
-        await setupAudioContext()
-
         if (autoplay) {
           try {
+            await audio.value.load() // Explicitly load before playing
             const playPromise = audio.value.play()
             if (playPromise !== undefined) {
               await playPromise
@@ -283,9 +292,9 @@ export default {
             console.error('Play error:', playError)
             isPlaying.value = false
             if (playError.name === 'NotAllowedError') {
-              showError('Please tap to enable audio playback')
+              showError('Tap to enable audio playback')
             } else {
-              showError('Playback failed. Please try again.')
+              showError('Unable to play song. Please try again.')
             }
           }
         }
@@ -293,11 +302,11 @@ export default {
         console.error('Error playing audio:', error)
         isPlaying.value = false
         if (error.code === 'storage/object-not-found') {
-          showError(`Song "${song.title}" is not available`)
+          showError('This song is not available')
         } else if (error.code === 'storage/unauthorized') {
-          showError('Access denied. Please sign in.')
+          showError('Please sign in to play songs')
         } else {
-          showError('Unable to load song. Please check your connection.')
+          showError('Network error. Please check your connection.')
         }
       }
       
