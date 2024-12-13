@@ -22,7 +22,9 @@ export const algoliaService = {
       
       // Save objects to Algolia
       const { objectIDs } = await songIndex.saveObjects(records)
-      console.log('Successfully indexed songs:', objectIDs.length)
+      if (import.meta.env.DEV) {
+        console.log(`Algolia indexing completed: ${objectIDs.length} songs processed`)
+      }
       
       // Configure searchable attributes and ranking
       await songIndex.setSettings({

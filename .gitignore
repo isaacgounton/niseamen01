@@ -1,3 +1,12 @@
+# Dependencies
+node_modules
+.pnpm-store/
+
+# Build outputs
+dist
+dist-ssr
+*.local
+
 # Logs
 logs
 *.log
@@ -7,21 +16,32 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# PWA assets
+dev-dist/
 
 # Capacitor
 ios/
@@ -29,14 +49,26 @@ android/
 capacitor.config.json
 *.keystore
 *.jks
+*.p12
+*.key
+*.mobileprovision
 
-# Mobile-specific
-*.iml
-.gradle/
-build/
-captures/
-local.properties
-.externalNativeBuild
-.cxx
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+.firebaserc
+database.rules.json
 
-.env
+# Testing
+coverage/
+__snapshots__/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.temp/
+
+# Build configuration
+stats.html

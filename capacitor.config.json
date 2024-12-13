@@ -1,14 +1,28 @@
 {
-  "appId": "com.yourcompany.amen3",
-  "appName": "Amen3",
+  "appId": "com.niseamen.app",
+  "appName": "NiseAmen",
   "webDir": "dist",
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 3000,
       "launchAutoHide": true,
-      "backgroundColor": "#ffffffff",
+      "backgroundColor": "#1e1b4b",
       "androidSplashResourceName": "splash",
-      "androidScaleType": "CENTER_CROP"
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": true
     }
+  },
+  "server": {
+    "allowNavigation": [
+      "*"
+    ]
+  },
+  "ios": {
+    "contentInset": "always"
+  },
+  "android": {
+    "backgroundColor": "#1e1b4b"
   }
 }

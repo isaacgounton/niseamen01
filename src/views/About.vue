@@ -1,3 +1,7 @@
+<script setup>
+import logo from '../assets/sbjochoffa.webp'
+</script>
+
 <template>
   <div class="h-full flex flex-col overflow-hidden bg-transparent text-white">  <!-- Added 'overflow-hidden' -->
     <div class="flex-1 flex flex-col">
@@ -15,7 +19,7 @@
           <!-- App Info -->
           <div class="space-y-4">
             <div class="flex items-center justify-center mb-6">
-              <img src="/img/CantiqueECC.webp" alt="NiseAmen Logo" class="w-24 h-24 rounded-full shadow-lg">
+              <img :src="logo" alt="NiseAmen Logo" class="w-24 h-24 rounded-full shadow-lg">
             </div>
             <h3 class="text-xl font-semibold text-cyan-400">About the App</h3>
             <p class="text-white/80 leading-relaxed">
@@ -75,9 +79,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'About'
-}
-</script>
