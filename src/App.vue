@@ -250,22 +250,13 @@ export default {
       currentSong.value = song
       
       try {
-        // Get the download URL from Firebase Storage
         const musicRef = storageRef(storage, song.url)
         const downloadURL = await getDownloadURL(musicRef)
         
-        // Reset audio state
         audio.value.onerror = null
-        audio.value.src = ''
+        audio.value.src = downloadURL
         
-        // Set up error handling
-        audio.value.onerror = (e) => {
-          console.error('Audio error:', e)
-          isPlaying.value = false
-          showError('Unable to play song. Please try again.')
-        }
-
-        // Set up mobile audio context
+        // Set up mobile audio context without showing error
         try {
           const AudioContext = window.AudioContext || window.webkitAudioContext
           if (AudioContext && !window.audioContext) {
@@ -278,11 +269,9 @@ export default {
           console.error('AudioContext error:', audioContextError)
         }
 
-        // Load and play audio
-        audio.value.src = downloadURL
         if (autoplay) {
           try {
-            await audio.value.load() // Explicitly load before playing
+            await audio.value.load()
             const playPromise = audio.value.play()
             if (playPromise !== undefined) {
               await playPromise
@@ -291,9 +280,8 @@ export default {
           } catch (playError) {
             console.error('Play error:', playError)
             isPlaying.value = false
-            if (playError.name === 'NotAllowedError') {
-              showError('Tap to enable audio playback')
-            } else {
+            // Only show error for truly failed playback, not autoplay policy
+            if (playError.name !== 'NotAllowedError') {
               showError('Unable to play song. Please try again.')
             }
           }
@@ -303,10 +291,6 @@ export default {
         isPlaying.value = false
         if (error.code === 'storage/object-not-found') {
           showError('This song is not available')
-        } else if (error.code === 'storage/unauthorized') {
-          showError('Please sign in to play songs')
-        } else {
-          showError('Network error. Please check your connection.')
         }
       }
       
