@@ -62,7 +62,7 @@
 </template>
   
 <script>
-import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
+import { ref, computed, onMounted, watch, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { auth, storage } from './firebase'
 import { 
@@ -84,8 +84,7 @@ export default {
   setup() {
     const router = useRouter()
 
-    // State
-    const user = ref(null)
+    // Initialize state with default values
     const songs = ref([])
     const currentSong = ref(null)
     const currentLyrics = ref(null)
@@ -96,6 +95,7 @@ export default {
     const progressBar = ref(null)
     const errorMessage = ref('') // Add error message state
     let errorTimer = null // Add error message timer
+    const user = ref(null)
 
     // Modify menuItems to remove Admin
     const menuItems = [
@@ -141,23 +141,25 @@ export default {
       }
     }
 
+    // Initialize audio element immediately
     const initializeAudio = () => {
       if (!audio.value) {
         audio.value = new Audio()
-        audio.value.preload = 'metadata'
-
         audio.value.addEventListener('timeupdate', () => {
-          currentTime.value = audio.value.currentTime
+          currentTime.value = audio.value?.currentTime || 0
         })
-
         audio.value.addEventListener('loadedmetadata', () => {
-          duration.value = audio.value.duration
+          duration.value = audio.value?.duration || 0
         })
-
-        audio.value.addEventListener('ended', nextTrack)
+        audio.value.addEventListener('ended', () => {
+          isPlaying.value = false
+          nextTrack()
+        })
       }
     }
 
+    // Call initializeAudio immediately
+    initializeAudio()
 
     const restoreLastPlayed = async () => {
       if (user.value) {
@@ -246,55 +248,34 @@ export default {
         return
       }
 
-      initializeAudio()
-      currentSong.value = song
-      
       try {
+        await initializeAudio()
+        currentSong.value = song
+        
         const musicRef = storageRef(storage, song.url)
         const downloadURL = await getDownloadURL(musicRef)
         
-        audio.value.onerror = null
-        audio.value.src = downloadURL
-        
-        // Set up mobile audio context without showing error
-        try {
-          const AudioContext = window.AudioContext || window.webkitAudioContext
-          if (AudioContext && !window.audioContext) {
-            window.audioContext = new AudioContext()
+        if (audio.value) {
+          audio.value.src = downloadURL
+          
+          if (autoplay) {
+            try {
+              await audio.value.play()
+              isPlaying.value = true
+            } catch (playError) {
+              console.error('Play error:', playError)
+              if (playError.name !== 'NotAllowedError') {
+                showError('Unable to play song')
+              }
+            }
           }
-          if (window.audioContext?.state === 'suspended') {
-            await window.audioContext.resume()
-          }
-        } catch (audioContextError) {
-          console.error('AudioContext error:', audioContextError)
         }
 
-        if (autoplay) {
-          try {
-            await audio.value.load()
-            const playPromise = audio.value.play()
-            if (playPromise !== undefined) {
-              await playPromise
-              isPlaying.value = true
-            }
-          } catch (playError) {
-            console.error('Play error:', playError)
-            isPlaying.value = false
-            // Only show error for truly failed playback, not autoplay policy
-            if (playError.name !== 'NotAllowedError') {
-              showError('Unable to play song. Please try again.')
-            }
-          }
-        }
+        await loadLyrics(song.id)
       } catch (error) {
-        console.error('Error playing audio:', error)
-        isPlaying.value = false
-        if (error.code === 'storage/object-not-found') {
-          showError('This song is not available')
-        }
+        console.error('Error playing song:', error)
+        showError('Error loading song')
       }
-      
-      await loadLyrics(song.id)
     }
 
 
@@ -357,47 +338,19 @@ export default {
     }
 
     // Lifecycle
-    onMounted(() => {
-      initializeAudio() // Initialize audio on component mount
-      loadSongs()
-
-      onAuthStateChanged(auth, async (userData) => {
-        user.value = userData
-        if (userData) {
-          await restoreLastPlayed()
-        }
-      })
-
-      // Event listener for saving state before unload
-      window.addEventListener('beforeunload', saveCurrentState)
-
-      // Event listener for saving state when page becomes hidden
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') {
-          saveCurrentState()
-        }
-      })
-
-      // Cleanup function
-      return () => {
-        // Remove event listeners
-        window.removeEventListener('beforeunload', saveCurrentState)
-        document.removeEventListener('visibilitychange', saveCurrentState)
-
-        // Clean up audio event listeners
-        if (audio.value) {
-          audio.value.removeEventListener('timeupdate', null)
-          audio.value.removeEventListener('loadedmetadata', null)
-          audio.value.removeEventListener('ended', nextTrack)
-        }
-
-        // If there's an ongoing audio playback, pause it
-        if (audio.value && !audio.value.paused) {
-          audio.value.pause()
-        }
-
-        // Save the current state one last time when component is unmounted
-        saveCurrentState()
+    onMounted(async () => {
+      try {
+        await initializeAudio()
+        await loadSongs()
+        
+        onAuthStateChanged(auth, async (userData) => {
+          user.value = userData
+          if (userData) {
+            await restoreLastPlayed()
+          }
+        })
+      } catch (error) {
+        console.error('Mounting error:', error)
       }
     })
 

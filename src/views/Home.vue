@@ -1,18 +1,81 @@
 <script setup>
+import { ref, computed, watch } from 'vue'
+import { algoliaService } from '../services/algolia'
+import debounce from 'lodash/debounce'
 import logo from '../assets/sbjochoffa.webp'
+
+// Props
+const props = defineProps(['songs', 'currentSong', 'isPlaying', 'currentTime', 'duration', 'progress'])
+const emit = defineEmits(['previousTrack', 'nextTrack', 'togglePlay', 'playSong', 'seek'])
+
+// State
+const searchQuery = ref('')
+const searchResults = ref([])
+const isSearching = ref(false)
+
+// Utility functions
+const formatTime = (time) => {
+  const minutes = Math.floor(time / 60)
+  const seconds = Math.floor(time % 60)
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
+// Search functionality
+const performSearch = debounce(async (query) => {
+  if (!query) {
+    searchResults.value = []
+    return
+  }
+  
+  isSearching.value = true
+  try {
+    const results = await algoliaService.search(query)
+    searchResults.value = results.map(hit => {
+      const fullSong = props.songs.find(s => s.id === hit.objectID)
+      return {
+        ...fullSong,
+        id: hit.objectID,
+        title: (hit._highlightResult?.title?.value || hit.title).replace(/<\/?mark>/g, ''),
+        matchedLyrics: hit._highlightResult?.lyrics?.value
+      }
+    }).filter(song => song.url)
+  } catch (error) {
+    console.error('Search error:', error)
+  } finally {
+    isSearching.value = false
+  }
+}, 300)
+
+// Computed
+const filteredSongs = computed(() => {
+  if (!searchQuery.value) return props.songs
+  return searchResults.value
+})
+
+// Watch search query
+watch(searchQuery, (newQuery) => {
+  performSearch(newQuery)
+})
+
+// Event handlers
+const previousTrack = () => emit('previousTrack')
+const nextTrack = () => emit('nextTrack')
+const togglePlay = () => emit('togglePlay')
+const playSong = (song) => emit('playSong', song)
+const seek = (event) => emit('seek', event)
 </script>
 
 <template>
   <div class="h-full flex flex-col bg-transparent text-white">
     <!-- Header section with fixed image path -->
-    <div class="p-4 bg-white/5 border-b border-white/10">
+    <!--<div class="p-4 bg-white/5 border-b border-white/10">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
           <img :src="logo" alt="NiseAmen Logo" class="w-12 h-12 rounded-full shadow-lg">
           <h1 class="text-3xl font-extrabold text-white">NiseAmen</h1>
         </div>
       </div>
-    </div>
+    </div>-->
     
     <div class="flex-1 flex flex-col overflow-hidden">  <!-- Added 'overflow-hidden' -->
       <div class="flex-1 flex flex-col">  <!-- Changed to 'flex-1 flex flex-col' -->
@@ -21,7 +84,7 @@ import logo from '../assets/sbjochoffa.webp'
           <div class="flex items-center space-x-4 sm:space-x-6">
             <div class="w-16 h-16 sm:w-24 sm:h-24 relative">
               <img 
-                :src="currentSong?.albumArt || logo" 
+                :src="logo"
                 :class="[
                   'w-full h-full rounded-full object-cover border-4 border-purple-400/50', 
                   { 'animate-spin-slow': isPlaying }
@@ -163,96 +226,6 @@ import logo from '../assets/sbjochoffa.webp'
     </div>
   </div>
 </template>
-
-<script>
-import { ref, computed, watch } from 'vue'
-import { algoliaService } from '../services/algolia'
-import debounce from 'lodash/debounce'
-
-export default {
-  name: 'Home',
-  props: ['songs', 'currentSong', 'isPlaying', 'currentTime', 'duration', 'progress'],
-  emits: ['previousTrack', 'nextTrack', 'togglePlay', 'playSong', 'seek'],
-  setup(props, { emit }) {
-    const user = ref(null)
-    const searchQuery = ref('')
-    const searchResults = ref([])
-    const isSearching = ref(false)
-
-    const signIn = () => {
-      // Implement sign-in logic
-    }
-
-    const signOut = () => {
-      // Implement sign-out logic
-    }
-
-    // Debounced search function
-    const performSearch = debounce(async (query) => {
-      if (!query) {
-        searchResults.value = []
-        return
-      }
-      
-      isSearching.value = true
-      try {
-        const results = await algoliaService.search(query)
-        searchResults.value = results.map(hit => {
-          const fullSong = props.songs.find(s => s.id === hit.objectID)
-          return {
-            ...fullSong,
-            id: hit.objectID,
-            // Remove HTML tags from the title
-            title: (hit._highlightResult?.title?.value || hit.title).replace(/<\/?mark>/g, ''),
-            matchedLyrics: hit._highlightResult?.lyrics?.value
-          }
-        }).filter(song => song.url)
-      } catch (error) {
-        console.error('Search error:', error)
-      } finally {
-        isSearching.value = false
-      }
-    }, 300)
-
-    // Watch for search query changes
-    watch(searchQuery, (newQuery) => {
-      performSearch(newQuery)
-    })
-
-    const filteredSongs = computed(() => {
-      if (!searchQuery.value) return props.songs
-      return searchResults.value
-    })
-
-    const formatTime = (time) => {
-      const minutes = Math.floor(time / 60)
-      const seconds = Math.floor(time % 60)
-      return `${minutes}:${seconds.toString().padStart(2, '0')}`
-    }
-
-    const previousTrack = () => emit('previousTrack')
-    const nextTrack = () => emit('nextTrack')
-    const togglePlay = () => emit('togglePlay')
-    const playSong = (song) => emit('playSong', song)
-    const seek = (event) => emit('seek', event)
-
-    return {
-      user,
-      signIn,
-      signOut,
-      searchQuery,
-      filteredSongs,
-      isSearching,
-      formatTime,
-      previousTrack,
-      nextTrack,
-      togglePlay,
-      playSong,
-      seek
-    }
-  }
-}
-</script>
 
 <style>
 /* Add styles for Algolia highlights */

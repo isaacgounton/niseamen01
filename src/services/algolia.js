@@ -10,14 +10,16 @@ const songIndex = client.initIndex('niseamen_songs')  // Changed index name to b
 export const algoliaService = {
   async initializeIndex(songs) {
     try {
-      // Transform songs into Algolia records
+      // Transform songs into Algolia records with numeric handling
       const records = songs.map(song => ({
         objectID: song.id,
         title: song.title,
+        // Add numeric fields for better number searching
+        songNumber: parseInt(song.title.match(/\d+/)?.[0] || '0', 10),
         artist: song.artist,
         lyrics: song.lyrics,
-        // Only include necessary fields for search
-        searchableContent: `${song.title} ${song.artist || ''} ${song.lyrics || ''}`
+        // Include number in searchable content
+        searchableContent: `${song.title} ${song.artist || ''} ${song.lyrics || ''} ${song.title.match(/\d+/)?.[0] || ''}`
       }))
       
       // Save objects to Algolia
@@ -26,9 +28,10 @@ export const algoliaService = {
         console.log(`Algolia indexing completed: ${objectIDs.length} songs processed`)
       }
       
-      // Configure searchable attributes and ranking
+      // Update index settings for numeric search
       await songIndex.setSettings({
         searchableAttributes: [
+          'songNumber',  // Add numeric field first for priority
           'title',
           'artist',
           'lyrics',
@@ -44,27 +47,52 @@ export const algoliaService = {
           'attribute',
           'exact',
           'custom'
-        ]
+        ],
+        // Optimize for number searches
+        numericAttributesForFiltering: ['songNumber'],
+        typoTolerance: false,  // Disable typo tolerance for exact number matching
+        queryType: 'prefixAll',
+        distinct: true
       })
     } catch (error) {
       console.error('Error initializing Algolia index:', error)
     }
   },
 
+  async reindexAll(songs) {
+    try {
+      // Clear the existing index
+      await songIndex.clearObjects()
+      console.log('Cleared existing index')
+
+      // Reindex all songs
+      return await this.initializeIndex(songs)
+    } catch (error) {
+      console.error('Error reindexing:', error)
+      throw error
+    }
+  },
+
   async search(query) {
     try {
-      const { hits } = await songIndex.search(query, {
-        attributesToRetrieve: ['objectID', 'title', 'artist', 'lyrics'],
+      // Check if query is a number
+      const isNumber = /^\d+$/.test(query)
+      
+      const searchParams = {
+        attributesToRetrieve: ['objectID', 'title', 'artist', 'lyrics', 'songNumber'],
         attributesToHighlight: ['title', 'lyrics'],
         highlightPreTag: '<mark>',
         highlightPostTag: '</mark>',
         snippetEllipsisText: '...',
-        // Add advanced search options
-        typoTolerance: true,
-        minWordSizefor1Typo: 3,
-        minWordSizefor2Typos: 7,
         hitsPerPage: 50
-      })
+      }
+
+      // Add numeric filtering if it's a number
+      if (isNumber) {
+        searchParams.numericFilters = [`songNumber = ${parseInt(query, 10)}`]
+      }
+
+      const { hits } = await songIndex.search(query, searchParams)
       return hits
     } catch (error) {
       console.error('Error searching:', error)
