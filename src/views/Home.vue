@@ -106,9 +106,10 @@
         <div class="relative">
           <input
             v-model="searchQuery"
-            type="text"
+            type="search"
+            inputmode="text"
             placeholder="Search songs or lyrics..."
-            class="w-full p-2 bg-white/10 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+            class="w-full p-2 bg-white/10 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 appearance-none"
           />
           <div v-if="isSearching" class="absolute right-3 top-1/2 transform -translate-y-1/2">
             <svg class="animate-spin h-5 w-5 text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

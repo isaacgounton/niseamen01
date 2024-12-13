@@ -249,23 +249,43 @@ export default {
         const musicRef = storageRef(storage, song.url)
         const downloadURL = await getDownloadURL(musicRef)
         
-        // Add loading state and error handling for audio loading
-        audio.value.onerror = () => {
+        // Reset any previous errors
+        audio.value.onerror = null
+        
+        // Set up error handling for audio loading
+        audio.value.onerror = (e) => {
+          console.error('Audio error:', e)
           isPlaying.value = false
-          showError('Failed to load the song. Please check your connection and try again.')
+          showError(`Unable to play "${song.title}". Please try again.`)
         }
 
+        // Set up audio context for mobile
+        const setupAudioContext = async () => {
+          const AudioContext = window.AudioContext || window.webkitAudioContext
+          if (AudioContext) {
+            const audioContext = new AudioContext()
+            await audioContext.resume()
+          }
+        }
+
+        // Set the source and attempt to play
         audio.value.src = downloadURL
+        await setupAudioContext()
+
         if (autoplay) {
           try {
-            await audio.value.play()
-            isPlaying.value = true
+            const playPromise = audio.value.play()
+            if (playPromise !== undefined) {
+              await playPromise
+              isPlaying.value = true
+            }
           } catch (playError) {
+            console.error('Play error:', playError)
             isPlaying.value = false
             if (playError.name === 'NotAllowedError') {
-              showError('Playback was blocked. Please interact with the page first.')
+              showError('Please tap to enable audio playback')
             } else {
-              showError('Unable to play the song. Please try again.')
+              showError('Playback failed. Please try again.')
             }
           }
         }
@@ -273,13 +293,14 @@ export default {
         console.error('Error playing audio:', error)
         isPlaying.value = false
         if (error.code === 'storage/object-not-found') {
-          showError('This song is currently unavailable.')
+          showError(`Song "${song.title}" is not available`)
         } else if (error.code === 'storage/unauthorized') {
-          showError('You don\'t have permission to play this song.')
+          showError('Access denied. Please sign in.')
         } else {
-          showError('Failed to load the song. Please try again later.')
+          showError('Unable to load song. Please check your connection.')
         }
       }
+      
       await loadLyrics(song.id)
     }
 

@@ -94,6 +94,34 @@ html, body {
          text-gray-100 placeholder-gray-400;
 }
 
+/* Mobile input styles */
+input[type="search"] {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+/* Prevent iOS zoom on input focus */
+@media screen and (max-width: 768px) {
+  input[type="search"],
+  input[type="text"],
+  input[type="number"] {
+    font-size: 16px;
+  }
+}
+
+/* Improve tap targets on mobile */
+button {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Prevent content shift on mobile */
+.fixed {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
 /* Animations */
 @keyframes fadeIn {
   from { opacity: 0; }
