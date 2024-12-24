@@ -7,8 +7,7 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      registerType: 'prompt',  // Changed from 'autoUpdate' to 'prompt'
       includeAssets: ['favicon.ico'],
       manifest: {
         name: 'NiseAmen',
@@ -18,7 +17,7 @@ export default defineConfig({
         background_color: '#1e1b4b',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/',
+        id: '/',
         start_url: '/',
         icons: [
           {
@@ -35,7 +34,15 @@ export default defineConfig({
             src: '/resources/AppImages/android/android-launchericon-512-512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
+            purpose: 'maskable'
+          }
+        ],
+        categories: ['music', 'entertainment'],
+        shortcuts: [
+          {
+            name: 'NiseAmen - Celestial Hymns',
+            url: '/',
+            icons: [{ src: '/resources/AppImages/android/android-launchericon-192-192.png', sizes: '192x192' }]
           }
         ]
       },
@@ -60,7 +67,8 @@ export default defineConfig({
       },
       devOptions: {
         enabled: true,
-        type: 'module'
+        type: 'module',
+        navigateFallback: 'index.html'
       }
     })
   ],
