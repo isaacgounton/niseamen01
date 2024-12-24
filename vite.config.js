@@ -47,7 +47,10 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,mp3}'],
+        globPatterns: [
+          '**/*.{js,css,html,ico,png,svg,webp}',
+          '**/*.mp3'  // Changed from 'assets/**/*.mp3' to match any MP3 file
+        ],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -62,8 +65,23 @@ export default defineConfig({
                 statuses: [0, 200]
               }
             }
+          },
+          {
+            urlPattern: /\.mp3$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'audio-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
           }
-        ]
+        ],
+        cleanupOutdatedCaches: true
       },
       devOptions: {
         enabled: true,
@@ -80,6 +98,8 @@ export default defineConfig({
   publicDir: 'resources/public',
   build: {
     outDir: 'dist',
+    target: 'esnext',
+    chunkSizeWarningLimit: 2000,
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html')
@@ -88,7 +108,10 @@ export default defineConfig({
         '/images/sbjochoffa.webp'
       ],
       output: {
-        assetFileNames: 'assets/[name].[ext]'
+        assetFileNames: 'assets/[name].[ext]',
+        manualChunks: {
+          vendor: ['vue', '@capacitor/core']
+        }
       }
     }
   }
