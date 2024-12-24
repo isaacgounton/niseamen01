@@ -75,6 +75,7 @@ import { getDownloadURL, ref as storageRef } from 'firebase/storage'
 import { songService } from './services/firebase'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMusic, faBook, faInfo, faUser } from '@fortawesome/free-solid-svg-icons'
+import { useRegisterSW } from 'virtual:pwa-register/vue'
 
 export default {
   name: 'App',
@@ -358,6 +359,23 @@ export default {
     onUnmounted(() => {
       if (errorTimer) clearTimeout(errorTimer)
     })
+
+    const {
+      needRefresh,
+      updateServiceWorker,
+      offlineReady
+    } = useRegisterSW()
+
+    // Add PWA update handling
+    watch(needRefresh, async (newValue) => {
+      if (newValue) {
+        try {
+          await updateServiceWorker()
+        } catch (error) {
+          console.error('Failed to update service worker:', error)
+        }
+      }
+    })
       
       return {
         user,
@@ -380,6 +398,9 @@ export default {
         audio,
         loadLyrics,
         errorMessage,
+        needRefresh,
+        updateServiceWorker,
+        offlineReady
       }
     }
   }
