@@ -30,6 +30,7 @@ export default defineConfig({
           vendor: ['vue', '@capacitor/core']
         }
       }
-    }
+    },
+    copyPublicDir: true  // Ensure public files are copied
   }
 });
