@@ -44,8 +44,10 @@ Thumbs.db
 dev-dist/
 
 # Capacitor
-ios/
-android/
+/ios/
+/android/
+!resources/AppImages/ios
+!resources/AppImages/android
 capacitor.config.json
 *.keystore
 *.jks
