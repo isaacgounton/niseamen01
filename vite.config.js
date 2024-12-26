@@ -3,16 +3,13 @@ import vue from '@vitejs/plugin-vue';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [
-    vue()
-    // Removed VitePWA plugin
-  ],
+  plugins: [vue()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
   },
-  publicDir: 'resources/public',
+  publicDir: 'public',
   build: {
     outDir: 'dist',
     target: 'esnext',
@@ -21,16 +18,18 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, 'index.html')
       },
-      external: [
-        '/images/sbjochoffa.webp'
-      ],
       output: {
         assetFileNames: 'assets/[name].[ext]',
         manualChunks: {
           vendor: ['vue', '@capacitor/core']
         }
       }
+    }
+  },
+  server: {
+    headers: {
+      'Service-Worker-Allowed': '/',
+      'Cache-Control': 'no-store',
     },
-    copyPublicDir: true  // Ensure public files are copied
   }
 });

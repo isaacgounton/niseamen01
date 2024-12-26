@@ -1,5 +1,14 @@
 <template>
   <div class="h-screen flex flex-col">
+    <!-- Add install button if prompt is available -->
+    <button
+      v-if="deferredPrompt"
+      @click="installPWA"
+      class="fixed top-4 right-4 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg z-50"
+    >
+      Install App
+    </button>
+    
     <!-- Main Content Area -->
     <main class="flex-1 w-full overflow-auto">
       <div class="h-full w-full">
@@ -83,6 +92,9 @@ export default {
   },
   setup() {
     const router = useRouter()
+
+    // Add these near the start of setup()
+    const deferredPrompt = ref(null)
 
     // Initialize state with default values
     const songs = ref([])
@@ -339,6 +351,11 @@ export default {
 
     // Lifecycle
     onMounted(async () => {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault()
+        deferredPrompt.value = e
+      })
+
       try {
         await initializeAudio()
         await loadSongs()
@@ -358,6 +375,24 @@ export default {
     onUnmounted(() => {
       if (errorTimer) clearTimeout(errorTimer)
     })
+
+    // Add this method
+    const installPWA = async () => {
+      if (!deferredPrompt.value) {
+        return
+      }
+      
+      deferredPrompt.value.prompt()
+      
+      try {
+        const { outcome } = await deferredPrompt.value.userChoice
+        console.log(`User response to install prompt: ${outcome}`)
+      } catch (err) {
+        console.error('Error during PWA installation:', err)
+      }
+      
+      deferredPrompt.value = null
+    }
       
       return {
         user,
@@ -379,7 +414,9 @@ export default {
         seek,
         audio,
         loadLyrics,
-        errorMessage
+        errorMessage,
+        deferredPrompt,
+        installPWA,
       }
     }
   }
